@@ -1,0 +1,39 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <string.h>
+
+int stackArr[10000]; // 명령어의 수가 10000개 이므로 최대 push 수도 10000번
+int uindex = 0; // index라는 변수가 string.h에 있어서 사용x uindex - user index
+void push(int num) { stackArr[uindex++] = num; }
+int pop() {
+	if (!empty()) { return stackArr[--uindex]; }
+	else return -1;
+}
+void size() { printf("%d\n", uindex); } // push가 이루어진 수 == index + 1값
+int empty() { // 스택이 비어있으면 1리턴 아니면 0리턴
+	if (uindex != 0) { return 0; }
+	else return 1;
+}
+void top() { // 스택의 최상위 값만 출력
+	if (!empty()) { printf("%d\n", stackArr[uindex - 1]); }
+	else printf("-1\n");
+}
+
+int main() {
+	int testCase; 
+	scanf("%d", &testCase);
+	for (int i = 0; i < testCase; i++) {
+		char commandArr[10];
+		scanf("%s", &commandArr);
+		if (strcmp(commandArr, "push") == 0) {
+			int num;
+			scanf("%d", &num);
+			push(num);
+		}
+		else if (strcmp(commandArr, "pop") == 0) { printf("%d\n", pop()); }
+		else if (strcmp(commandArr, "empty") == 0) { printf("%d\n", empty()); }
+		else if (strcmp(commandArr, "top") == 0) { top(); }
+		else if (strcmp(commandArr, "size") == 0) { size(); }
+	}
+	return 0;
+}
