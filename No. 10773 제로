@@ -1,0 +1,35 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+/*
+접근법
+재현이는 잘못된 수를 부를 때마다 0을 외친다 -> pop을 의미한다.
+따라서 수를 스택으로 저장하고 0이 들어오면 top에 있는 수를 팝하여 없애고
+testCase가 끝날때에는 스택에 남아있는 모든 수를 꺼내서 더하면 된다.
+testCase의 값이 최대 push수와 동일하기 때문에 testCase의 크기로 스택 사이즈를 잡는다.
+*/
+int  idx = 0;
+int* stackArray;
+void createStack(int size) { stackArray = (int*)calloc(size, sizeof(int)); }
+void push(int num) { stackArray[idx++] = num; }
+void pop() { if (!empty()) { --idx; } }
+int empty() { 
+	if (idx != 0) return 0;
+	else return 1;
+};
+
+int main() {
+	int testCase, checkNum, sum = 0; scanf("%d", &testCase);
+	createStack(testCase);
+
+	for (int i = 0; i < testCase; i++) {
+		int checkNum;
+		scanf("%d", &checkNum);
+		if (checkNum != 0) { push(checkNum); }
+		else pop();
+	}
+	for (int i = 0; i < idx; i++) { sum += stackArray[i]; }
+	printf("%d", sum); free(stackArray);
+    
+	return 0;
+}
