@@ -1,0 +1,51 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>	
+#include <string.h>
+#define MAX_SIZE 100
+
+/*
+입력값에 보면 .을 구분자로 사용하고 공백을 포함하는 문자열 이기 때문에
+scanf("%s")를 사용하지 못한다. 물론 scanf("%[^\n]%*c", str);를 사용하면 된다.
+*c는 버퍼에 남아있는 개행문자를 삭제하는 역할을 수행한다. %[^\n]은 개행문자 전까지 다 받으라는 뜻이다.
+혹은 fgets (char *string, int strSIZE, FILE *stream)를 사용하고 string[strlen(string)-1] = '\0'
+혹은 gets()를 사용하여 엔터까지 입력받고 마지막 엔터를 \0값으로(함수가 변환시켜줌) 변환하는 방법도 있다.
+오늘은 gets()를 사용하려고 한다.
+
+접근법
+일단 테스트 케이스의 수가 주어지지 않는다.
+입력값을 보니," ."이 아닌 '.'을 입력받으면 종료가 된다.
+이를 종료 조건으로 사용할 것이다.
+괄호 페어 조건은 () [] 이며, ([)]과 )( ][ 은 페어를 이루지 못한다.
+즉 (를 만나면 push, )를 만나면 pop하는데(중괄호 동일) 스택에 탑에 페어가 없으면 no를 있으면 yes를 출력하는 문제이다.
+*/
+
+int top = -1;
+void push(char stack[], char bracket) { stack[++top] = bracket; }
+void pop() { --top; }
+
+int main() {
+	while (1) {
+		char stack[MAX_SIZE], text[MAX_SIZE];
+		gets(text);
+		if (strcmp(text, ".") == 0) break; // 단 하나의 dot만 입력된다면 해당 프로그램을 종료.
+		else
+			for (int i = 0; i < strlen(text); i++) {
+				if (text[i] == '(' || text[i] == '[' || text[i] == ')' || text[i] == ']') 
+					if(top == -1) push(stack, text[i]); 
+					// top의 값이 -1이면 비교 대상이 아무것도 없고 인덱스 오류가 날 수 있기 때문에 무조건 저장한다.
+					else { // top의 값이 -1이 아니다 == push가 한 번이라도 일어났다.
+						if (stack[top] == '(' && text[i] == ')') pop();
+                        // 스택의 top의 값과 페어를 이룬다면 ok니까 pop하여 페어 정리
+						else if (stack[top] == '[' && text[i] == ']') pop();
+						else push(stack, text[i]);
+                        // 페어를 이루지 못한다면 이후에 페어가 나올수도 있고 잘못된 페어를 이룰 수 있으니
+                        // push하여 저장한다.
+					}
+			}
+		if (top == -1) printf("yes\n"); // 모두 페어를 맞추었다면 top은 -1 초깃값으로 돌아온다.
+		else printf("no\n"); // 페어를 맞추지 못하였다는 뜻이다.
+		top = -1; // 변환되어 있는 top의 값을 돌려놓는다.
+	}
+	
+	return 0;
+}N
